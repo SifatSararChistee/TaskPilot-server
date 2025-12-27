@@ -5,6 +5,7 @@ require('dotenv').config();
 
 const { testConnection } = require('./config/database');
 const userRoutes = require('./routes/userRoutes');
+const authRoutes = require('./routes/authRoutes');
 
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -26,9 +27,16 @@ app.get('/', (req, res) => {
     message: 'User Management System API',
     version: '1.0.0',
     endpoints: {
+      auth: {
+        register: 'POST /api/auth/register',
+        login: 'POST /api/auth/login',
+        verify: 'GET /api/auth/verify (Protected)',
+        logout: 'POST /api/auth/logout (Protected)'
+      },
       users: {
         getAll: 'GET /api/users',
         getById: 'GET /api/users/:id',
+        checkEmail: 'GET /api/users/check?email=',
         create: 'POST /api/users',
         update: 'PUT /api/users/:id',
         delete: 'DELETE /api/users/:id'
@@ -37,6 +45,7 @@ app.get('/', (req, res) => {
   });
 });
 
+app.use('/api/auth', authRoutes);
 app.use('/api', userRoutes);
 
 // Error handling middleware

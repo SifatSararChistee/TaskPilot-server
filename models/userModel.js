@@ -46,6 +46,13 @@ class User {
     return rows[0] || null;
   }
 
+  // Check if user exists by email (returns only existence status)
+  static async checkEmailExists(email) {
+    const query = 'SELECT id, email FROM users WHERE email = ?';
+    const [rows] = await promisePool.execute(query, [email]);
+    return rows.length > 0;
+  }
+
   // Update user
   static async update(id, userData) {
     const { name, email, phone, gender } = userData;
