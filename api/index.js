@@ -3,17 +3,32 @@ const cors = require('cors');
 const bodyParser = require('body-parser');
 require('dotenv').config();
 
-const { testConnection } = require('../config/database');
+const { testConnection } = require('../config/database.js');
 const userRoutes = require('../routes/userRoutes');
 const authRoutes = require('../routes/authRoutes');
 
 const app = express();
 const PORT = process.env.PORT || 3000;
 
+app.use(cors({
+  origin: [
+    'http://localhost:5173',
+    'https://task-pilot.vercel.app',
+    'https://task-pilot-server-git-main-sifus-projects-614a8279.vercel.app'        
+  ],
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+  allowedHeaders: ['Content-Type', 'Authorization'],
+  credentials: true
+}));
+
+app.options('*', cors());
+
 // Middleware
-app.use(cors());
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
+
+
+testConnection()
 
 // Request logging middleware
 app.use((req, res, next) => {
@@ -66,23 +81,11 @@ app.use((req, res) => {
   });
 });
 
-// // Start server
-// const startServer = async () => {
-//   try {
-//     // Test database connection
-//     await testConnection();
-    
-//     app.listen(PORT, () => {
-//       console.log(`🚀 Server running on port ${PORT}`);
-//       console.log(`📍 Environment: ${process.env.NODE_ENV}`);
-//       console.log(`🌐 API URL: http://localhost:${PORT}`);
-//     });
-//   } catch (error) {
-//     console.error('Failed to start server:', error);
-//     process.exit(1);
-//   }
-// };
 
-// startServer();
+if (process.env.NODE_ENV !== 'production') {
+  app.listen(PORT, () => {
+    console.log(`Server running on port ${PORT}`);
+  });
+}
 
 module.exports = app;
