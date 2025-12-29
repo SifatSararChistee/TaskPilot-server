@@ -1,36 +1,39 @@
 const mysql = require('mysql2');
 const fs = require('fs');
+const path = require('path');
 require('dotenv').config();
 
-// Create connection pool for Aiven
-const pool = mysql.createPool({
-  host: process.env.DB_HOST,
-  user: process.env.DB_USER,
-  password: process.env.DB_PASSWORD,
-  database: process.env.DB_NAME,
-  port: process.env.DB_PORT,
+let pool;
 
-  ssl: {
-    ca: fs.readFileSync('./ca.pem')
-  },
+if (!pool) {
+  pool = mysql.createPool({
+    host: process.env.DB_HOST,
+    port: process.env.DB_PORT,
+    user: process.env.DB_USER,
+    password: process.env.DB_PASSWORD,
+    database: process.env.DB_NAME,
 
-  waitForConnections: true,
-  connectionLimit: 10,
-  queueLimit: 0
-});
+    ssl: {
+      ca: fs.readFileSync(
+        path.join(process.cwd(), 'ca.pem')
+      )
+    },
 
-// Promise-based pool
+    waitForConnections: true,
+    connectionLimit: 5,   // ✅ serverless-safe
+    queueLimit: 0
+  });
+}
+
 const promisePool = pool.promise();
 
-// Test database connection
 const testConnection = async () => {
   try {
-    const connection = await promisePool.getConnection();
-    console.log('✅ Connected to Aiven MySQL successfully');
-    connection.release();
+    await promisePool.query('SELECT 1');
+    console.log('✅ Connected to Aiven MySQL');
     return true;
   } catch (error) {
-    console.error('❌ Database connection failed:', error.message);
+    console.error('❌ DB connection failed:', error.message);
     return false;
   }
 };

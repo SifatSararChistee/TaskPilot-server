@@ -3,9 +3,9 @@ const cors = require('cors');
 const bodyParser = require('body-parser');
 require('dotenv').config();
 
-const { testConnection } = require('./config/database');
-const userRoutes = require('./routes/userRoutes');
-const authRoutes = require('./routes/authRoutes');
+const { testConnection } = require('../config/database');
+const userRoutes = require('../routes/userRoutes');
+const authRoutes = require('../routes/authRoutes');
 
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -66,21 +66,23 @@ app.use((req, res) => {
   });
 });
 
-// Start server
-const startServer = async () => {
-  try {
-    // Test database connection
-    await testConnection();
+// // Start server
+// const startServer = async () => {
+//   try {
+//     // Test database connection
+//     await testConnection();
     
-    app.listen(PORT, () => {
-      console.log(`🚀 Server running on port ${PORT}`);
-      console.log(`📍 Environment: ${process.env.NODE_ENV}`);
-      console.log(`🌐 API URL: http://localhost:${PORT}`);
-    });
-  } catch (error) {
-    console.error('Failed to start server:', error);
-    process.exit(1);
-  }
-};
+//     app.listen(PORT, () => {
+//       console.log(`🚀 Server running on port ${PORT}`);
+//       console.log(`📍 Environment: ${process.env.NODE_ENV}`);
+//       console.log(`🌐 API URL: http://localhost:${PORT}`);
+//     });
+//   } catch (error) {
+//     console.error('Failed to start server:', error);
+//     process.exit(1);
+//   }
+// };
 
-startServer();
+// startServer();
+
+module.exports = app;
