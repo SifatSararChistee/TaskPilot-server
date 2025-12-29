@@ -3,6 +3,23 @@ const fs = require('fs');
 const path = require('path');
 require('dotenv').config();
 
+
+
+app.use(cors({
+  origin: [
+    'http://localhost:5173',
+    'https://task-pilot.vercel.app',
+    'https://task-pilot-server-git-main-sifus-projects-614a8279.vercel.app'        
+  ],
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+  allowedHeaders: ['Content-Type', 'Authorization'],
+  credentials: true
+}));
+
+// ✅ Handle preflight explicitly
+app.options('*', cors());
+
+
 let pool;
 
 if (!pool) {
