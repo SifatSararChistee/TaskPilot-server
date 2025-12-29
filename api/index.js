@@ -11,14 +11,10 @@ const app = express();
 const PORT = process.env.PORT || 3000;
 
 app.use(cors({
-  origin: [
-    'http://localhost:5173',
-    'https://task-pilot.vercel.app',
-    'https://task-pilot-server-git-main-sifus-projects-614a8279.vercel.app'        
-  ],
+  origin: true,  // This allows all origins temporarily for testing
+  credentials: true,
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
-  allowedHeaders: ['Content-Type', 'Authorization'],
-  credentials: true
+  allowedHeaders: ['Content-Type', 'Authorization']
 }));
 
 app.options('*', cors());
